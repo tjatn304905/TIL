@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div><!-- 결과: <div id="root"><button>Like<button></div>-->
+    <script type="text/babel"> // 바벨이 자바스크립트 안에서 JSX문법을 쓸 수 있도록 해줌
+      const e = React.createElement;
+
+      // 클래스 하나가 컴포넌트 하나다
+      class LikeButton extends React.Component {
+        constructor(props) {
+          super(props);
+          // state 부분을 이 위치에 쓴다는 것은 중요!
+          this.state = {
+            liked: false,
+          };
+        }
+
+        render() {
+          return <button type="submit" onClick={() => { this.setState({ liked: true })}}>
+            {this.state.liked === true ? 'Liked' : 'Like'}
+          </button>;
+          // JSX (JS + XML): html보다 더 엄격한 문법이 적용됨
+
+        //   e(
+        //     'button', 
+        //     { onClick: () => { this.setState({ liked: true })}, type: 'submit' }, 
+        //     this.state.liked === true ? 'Liked' : 'Like',
+        // );
+
+        // <button onclick="() => { console.log('clicked')}" type="submit">Like<button>
+        // $('button').text('Liked'); 제이쿼리에서는 이렇게 상태가 바뀌면 직접 바꿔줬어야하는데 react에서는 데이터와 화면을 알아서 일치시켜줌
+        }
+      }
+    </script>
+    <script type="text/babel">
+      ReactDOM.render(<div><LikeButton /><LikeButton /><LikeButton /><LikeButton /></div>, document.querySelector('#root'));
+      // ReactDOM.render(e(LikeButton), document.querySelector('#root'));
+    </script>
+  </body>
+</html>
