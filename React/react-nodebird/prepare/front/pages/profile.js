@@ -9,7 +9,7 @@ const Profile = () => {
     <Head>
       <title>내 프로필 | Nodebird </title>
     </Head>
-      <AppLayout>내 프로필</AppLayout>
+    <AppLayout>내 프로필</AppLayout>
     </>
   )
 };

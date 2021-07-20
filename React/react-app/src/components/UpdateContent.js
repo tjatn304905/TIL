@@ -12,6 +12,7 @@ class UpdateContent extends Component {
   }
 
   inputFormHandler(e){
+    debugger;
     this.setState({[e.target.name]:e.target.value}); // 타깃의 네임 값이 들어옴, 여기서는 title과 desc
   }
 
