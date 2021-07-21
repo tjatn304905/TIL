@@ -1,7 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
+
+import useInput from '../hooks/useInput';
 
 // styled component
 // styled를 적용해서 css 형식으로 만들어줄 수 있음
@@ -13,19 +16,24 @@ const FormWrapper = styled(Form)`
   padding: 10px;
 `;
 
-const LoginForm = ({ setIsLoggedIn }) => {
-  const [id, setId] = useState('');
-  const [password, setPassword] = useState('');
+const LoginForm = ({setIsLoggedIn}) => {
+  // 커스텀 훅
+  const [id, onChangeId] = useInput();
+  
+  // const [id, setId] = useState('');
+  
+// 컴포넌트에 props로 넘겨주는 함수에는 useCallback을 써줘야 최적화가 됨
+// useCallback은 함수를 캐싱
+ // const onChangeId = useCallback((e) => {
+ //   setId(e.target.value)
+ // }, []);
 
-   // 컴포넌트에 props로 넘겨주는 함수에는 userCallback을 써줘야 최적화가 됨
-   // useCallback은 함수를 캐싱
-  const onChangeId = useCallback((e) => {
-    setId(e.target.value)
-  }, []);
+  const [password, onChangePassword] = useInput();
+  // const [password, setPassword] = useState('');
 
-  const onChangePassword = useCallback((e) => {
-    setPassword(e.target.value)
-  }, []);
+  // const onChangePassword = useCallback((e) => {
+  //   setPassword(e.target.value)
+  // }, []);
 
   // onFinish에는 이미 preventDefault가 적용되어 있음
   const onSubmitForm = useCallback(() => {
@@ -66,5 +74,9 @@ const LoginForm = ({ setIsLoggedIn }) => {
     </FormWrapper>
   );
 }
+
+LoginForm.propTypes = {
+  setIsLoggedIn: PropTypes.func.isRequired,
+};
 
 export default LoginForm;

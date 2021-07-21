@@ -18,16 +18,16 @@ const AppLayout = ({children}) => {
     <div>
       {/* 링크 컴포넌트 쓰는 법은 다음과 같다 */}
       <Menu mode="horizontal">
-        <Menu.Item>
+        <Menu.Item key="nodebird">
           <Link href="/"><a>노드버드</a></Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="profile">
           <Link href="/profile"><a>프로필</a></Link>
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="enterbutton">
           <SearchInput enterButton />
         </Menu.Item>
-        <Menu.Item>
+        <Menu.Item key="signup">
           <Link href="/signup"><a>회원가입</a></Link>
         </Menu.Item>
       </Menu>
