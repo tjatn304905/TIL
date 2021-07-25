@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 
 import useInput from '../hooks/useInput';
+import { loginAction } from '../reducers/user';
 
 // styled component
 // styled를 적용해서 css 형식으로 만들어줄 수 있음
@@ -16,7 +17,9 @@ const FormWrapper = styled(Form)`
   padding: 10px;
 `;
 
-const LoginForm = ({setIsLoggedIn}) => {
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  
   // 커스텀 훅
   const [id, onChangeId] = useInput();
   
@@ -38,7 +41,7 @@ const LoginForm = ({setIsLoggedIn}) => {
   // onFinish에는 이미 preventDefault가 적용되어 있음
   const onSubmitForm = useCallback(() => {
     console.log(id, password)
-    setIsLoggedIn(true);
+    dispatch(loginAction({ id, password }));
   }, [id, password]);
 
   // useMemo를 사용하는 방법
@@ -74,9 +77,5 @@ const LoginForm = ({setIsLoggedIn}) => {
     </FormWrapper>
   );
 }
-
-LoginForm.propTypes = {
-  setIsLoggedIn: PropTypes.func.isRequired,
-};
 
 export default LoginForm;

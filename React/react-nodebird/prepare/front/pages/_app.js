@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Head from 'next/head'; // next에서는 Head 컴포넌트를 제공한다. 
 import 'antd/dist/antd.css';
 
-import wrapper from '../store/configureStore.'
+import wrapper from '../store/configureStore'
 
 const NodeBird = ({ Component }) => {
   return (

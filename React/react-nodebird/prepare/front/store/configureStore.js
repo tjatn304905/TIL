@@ -1,5 +1,6 @@
 import { createWrapper } from 'next-redux-wrapper';
-import { createStore } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension'
 
 import reducer from '../reducers'
 
@@ -10,7 +11,11 @@ import reducer from '../reducers'
 // 비동기와 데이터를 중앙에서 관리하면서 컴포넌트는 화면을 그리는 것에 집중하게 해줌.
 
 const configureStore = () => {
-  const store = createStore(reducer);
+  const middlewares = [];
+  const enhancer = process.env.NODE_ENV === 'production'
+    ? compose(applyMiddleware(...middlewares)) // 배포용일때는 devtool 미연동
+    : composeWithDevTools(applyMiddleware(...middlewares)) // 개발용일때는 devtool 연동(히스토리가 많이쌓여서 메모리를 많이 먹고, 보안에 취약하다)
+  const store = createStore(reducer, enhancer);
   store.dispatch({
     type: 'CAHNGE_NICKNAME',
     data: 'minsu'

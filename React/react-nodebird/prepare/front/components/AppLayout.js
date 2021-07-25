@@ -16,7 +16,10 @@ const SearchInput = styled(Input.Search)`
 const AppLayout = ({children}) => {
   // redux 설치 후 필요 없어짐
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const isLoggedIn = useSelector((state) => state.user.isLoggedIn)
+
+  // redux 사용 시
+  // const isLoggedIn = useSelector((state) => state.user.isLoggedIn) // 한단계 더 깊이 들어가는 버전
+  const { isLoggedIn } = useSelector((state) => state.user)
 
   return ( 
     <div>
