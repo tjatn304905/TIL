@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 
-import { logoutAction } from '../reducers/user'
+import { logoutAction } from '../reducers/user';
 
 import { Card, Avatar, Button } from 'antd';
 
