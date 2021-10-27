@@ -4,6 +4,12 @@ Java 를 대체하기 위한 목적으로 Jetbrains에서 개발한 언어로, �
 
 
 
+## 0. 강의 출처
+
+https://www.youtube.com/watch?v=8RIsukgeUVw&list=PLQdnHjXZyYadiw5aV3p6DwUdXV2bZuhlN
+
+
+
 ## 1. 변수와 자료형
 
 ```kotlin
@@ -1341,6 +1347,304 @@ fun main() {
     
     println(names zip numbers)
     
+}
+```
+
+
+
+## 28. 변수의 고급기술. 상수, lateinit, lazy
+
+```kotlin
+// val: 할당된 객체를 바꿀 수 없을 뿐이지, 객체 내부의 속성은 변경할 수 있음
+
+// 상수: 컴파일 시점에 결정되어, 절대 바꿀 수 없는 값(const val으로 선언)
+// 기본 자료형만 가능하며 런타임에 생성될 수 있는 다른 클래스의 객체들은 담을 수 없다.
+// 클래스의 속성이나 지역변수 등으로는 사용할 수 없으며
+// 반드시 companion object안에 선언하여 객체의 생성과 관계없이 class와 관계된 고정적인 값으로 사용
+// 의례적으로 대문자와 언더바를 이용한 표기법을 이용
+
+fun main() {
+    
+    val foodCourt = FoodCourt()
+    
+    // 변수의 경우 객체를 생성하는데 시간이 더 소요되어 성능의 하락이 있다
+    // 고정적으로 사용할 값은 상수를 통해 객체의 생성없이 메모리에 값을 고정하여 사용해 성능을 향상시킴
+    foodCourt.searchPrice(FoodCourt.FOOD_CREAM_PASTA)
+    foodCourt.searchPrice(FoodCourt.FOOD_STEAK)
+    foodCourt.searchPrice(FoodCourt.FOOD_PIZZA)
+
+}
+
+class FoodCourt {
+    fun searchPrice(foodName: String) {
+        val price = when(foodName)
+        {
+            FOOD_CREAM_PASTA -> 13000
+            FOOD_STEAK -> 25000
+            FOOD_PIZZA -> 15000
+            else -> 0
+        }
+        
+        println("${foodName}의 가격은 ${price}원 입니다")
+    }
+    
+    companion object {
+        const val FOOD_CREAM_PASTA = "크림파스타"
+        const val FOOD_STEAK = "스테이크"
+        const val FOOD_PIZZA = "피자"
+    }
+}
+```
+
+```kotlin
+// 코틀린에서는 변수를 선언할 때 객체를 바로 할당하지 않는 경우에는 기본적으로 컴파일되지 않는다.
+// 변수에 객체를 할당하는 것을 선언과 동시에 할 수 없을 때도 있다.
+
+// lateinit: var 앞에 사용하여 일단 변수만 선언하고 초기값의 할당은 나중에 할 수 있도록 하는 키워드
+// lateinit var 변수의 제한사항
+// 초기값 할당 전까지 변수를 사용할 수 없음(에러 발생)
+// 기본 자료형에는 사용할 수 없음(String은 가능)
+
+// ::a.isInitialized : lateinit변수의 초기화를 하였는지 여부를 확인
+
+fun main() {
+    
+    val a = lateInitSample()
+    
+    println(a.getLateInitText())
+    a.text = "새로 할당한 값"
+    println(a.getLateInitText())
+
+}
+
+class lateInitSample {
+    lateinit var text: String
+    
+    fun getLateInitText(): String {
+        if(::text.isInitialized) {
+            return text
+        }
+        else
+        {
+            return "기본값"
+        }
+    }
+}
+```
+
+```kotlin
+// 지연 대리자 속성: 변수를 사용하는 시점까지 초기화를 자동으로 늦춰줌
+// val a:Int by lazy {7} 식으로 사용(람다함수)
+// 선언 시 즉시 객체를 생성 및 할당하여 변수를 초기화하는 형태이지만 실제 실행시에는 val변수를 사용하는 시점에 초기화과정을 진행
+
+fun main() {
+    
+	val number: Int by lazy {
+        println("초기화를 합니다")
+        7 // 람다함수 특성 상 맨 마지막 구문의 결과가 변수에 할당 됨
+    }
+    
+    println("코드를 시작합니다")
+    println(number)
+    println(number)
+    
+}
+```
+
+
+
+## 29. 비트연산
+
+```kotlin
+// 비트연산: 정수형 변수를 2진법으로 연산할 수 있는 기능
+// 보통 정수형의 값을 비트단위로 나누어 데이터를 좀 더 작은 단위로 담아 경제성을 높이기 위해 사용
+// 최상위 비트를 마이너스/플러스 구분하기 위한 부호비트로 사용함
+
+// bitwise shift operators
+// shl(shift left): 부호비트를 제외한 모든 비트를 좌측으로 밀어주는 기능
+// shr(shift right): 부호비트를 제외한 모든 비트를 우측으로 밀어주는 기능
+// ushr(unsigned shift right): 부호비트를 포함하여 모든 비트를 우측으로 밀어주는 기능
+
+
+// bitwise operators
+// and: 비트가 둘 다 1인 자리면 1로 반환함
+// 원하는 위치에만 1을 넣어 비교해 비트를 확인, 비트를 0으로 만들고 싶은 부분에 0을 넣어 clear연산
+// or: 비트가 둘 중 하나라도 1인 자리는 1로 반환함
+// 비트값을 1로 설정하고 싶은 부분에 1을 넣어 set연산
+// xor: 비트가 같은 자리는 0, 다른 자리는 1로 반환함
+// 비교할 두 값이 비트별로 동일한지를 확인
+
+// inv(): 비트를 모두 반전시키는 역할
+
+fun main() {
+    
+    var bitData: Int = 0b10000
+    
+    bitData = bitData or(1 shl 2)
+    println(bitData.toString(2))  // 2진수 형태의 문자열로 출력
+    
+    var result = bitData and(1 shl 4)
+    println(result.toString(2))
+    
+    println(result shr 4)
+    
+    bitData = bitData and((1 shl 4).inv())
+    println(bitData.toString(2))
+    
+    println((bitData xor(0b10100)).toString(2))
+    	
+}
+```
+
+
+
+## 30. 코루틴을 통한 비동기 처리
+
+```kotlin
+// 코루틴: 메인 루틴과 별도로 진행이 가능한 루틴, 개발자가 실행과 종료를 제어할 수 있는 단위 
+// import kotlin.coroutines.*
+
+// Scope
+// GlobalScope: 프로그램 어디서나 제어, 동작이 가능한 기본 범위
+// CoroutineScope: 특정한 목적의 Dispatcher를 지정하여 제어 및 동작이 가능한 범위
+
+// CoroutineScope를 만들때 적용가능한 Dispatcher 
+// Dispatchers.Default: 기본적인 백그라운드 동작
+// Dispatchers.IO: I/O에 최적화된 동작
+// Dispatchers.Main: 메인(UI) 스레드에서 동작
+
+// 생성된 스코프에서 launch나 async를 통해 새로운 코루틴을 생성할 수 있다.
+// 모두 람다함수의 형식을 가지고 있다 
+// launch: 반환값이 없는 Job 객체
+// async: 반환값이 있는 Deffered 객체
+
+import kotlinx.coroutines.*
+
+fun main() {
+    
+	val scope = GlobalScope
+    
+    scope.launch {
+        for(i in 1..5)
+        {
+            println(i)
+        }
+    }
+    	
+}
+```
+
+```kotlin
+// 코루틴은 제어되는 스코프 또는 프로그램 전체가 종료되면 함께 종료
+// 코루틴이 끝까지 실행되는 것을 보장하려면 일정한 범위에서 코루틴이 모두 실행될 때까지 기다려야함
+// runBlocking을 사용하여 코루틴이 종료될때까지 메인루틴을 잠시 대기시켜준다.
+// 안드로이드에서는 메인스레드에 runBlocking을 걸어주면 일정 시간이상 응답이 없으면 ANR이 발생하며 앱이 강제종료됨
+
+import kotlinx.coroutines.*
+
+fun main() {
+    
+	runBlocking {
+        launch {
+            for(i in 1..5)
+            {
+                println(i)
+            }
+        }
+    }
+    	
+}
+```
+
+```kotlin
+// 루틴 대기를 위한 추가적인 함수들
+// delay(milisecond: Long): milisecond 단위로 루틴을 잠시 대기시켜주는 함수
+// Job.join(): Job의 실행이 끝날때까지 대기하는 함수
+// Deffered.await(): Deffered의 실행이 끝날때까지 대기하는 함수
+// await는 Deffered 객체의 결과값을 반환해주기도 함
+// 코루틴 내부, runBlocking{}과 같은 루틴의 대기가 가능한 구문 안에서만 동작이 가능함
+
+import kotlinx.coroutines.*
+
+fun main() {
+    
+	runBlocking {
+        val a = launch {
+            for(i in 1..5)
+            {
+                println(i)
+                delay(10)
+            }
+        }
+
+        val b = async {
+            "async 종료"
+        }
+
+        println("async 대기")
+        println(b.await())
+
+        println("launch 대기")
+        a.join()
+        println("launch 종료")
+    }
+   
+}
+```
+
+```kotlin
+// 코루틴을 중단하는 방법
+// cancel(): 다음 두 가지 조건이 발생하며 코루틴을 중단
+// 1. 코루틴 내부의 delay()함수 또는 yield()함수가 사용된 위치까지 수행된 뒤 종료됨
+// 2. cancel()로 인해 속성인 isActive가 false가 되므로 이를 확인하여 수동을 종료함
+
+import kotlinx.coroutines.*
+
+fun main() {
+    
+	runBlocking {
+        val a = launch {
+            for(i in 1..5)
+            {
+                println(i)
+                delay(10)
+            }
+        }
+
+        val b = async {
+            "async 종료"
+        }
+
+        println("async 대기")
+        println(b.await())
+
+        println("launch 취소")
+        a.cancel()
+        println("launch 종료")
+    }
+   
+}
+```
+
+```kotlin
+// withTimeoutNull(): 제한시간 내에 수행되면 결과 값을, 아닌 경우 null을 반환
+
+import kotlinx.coroutines.*
+
+fun main() {
+    
+	runBlocking {
+        var result = withTimeoutOrNull(50) {
+            for(i in 1..10) {
+                println(i)
+                delay(10)
+            }
+            "Finish"
+        }
+        
+        println(result)
+    }
+   
 }
 ```
 
